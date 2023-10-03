@@ -1,36 +1,23 @@
-FROM node:18-alpine AS deps
-RUN apk add --no-cache libc6-compat
+# Dockerfile for local development, see Dockerfile.prod for production
+
+FROM node:19-alpine
+
+# Set working directory
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN  npm install --production
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY ./package*.json ./
 
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+RUN chown -R node /app
 
-ENV NEXT_TELEMETRY_DISABLED 1
+# Run container as non-root user
+USER node
 
-RUN npm run build
+# Dependencies are installed on runtime
 
-FROM node:18-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-USER nextjs
-
+# Expose the listening port
 EXPOSE 3000
 
-ENV PORT 3000
-
-CMD ["npm", "start"]
+# Run npm dev script which does auto reload
+CMD ["npm", "run", "docker:dev"]
