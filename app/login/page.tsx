@@ -10,7 +10,7 @@ const Login = () => {
         e.preventDefault();
         console.log("email: ", email);
 
-        fetch("/api/login", {
+        fetch("host.com/user/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
             headers: {
