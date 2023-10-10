@@ -13,7 +13,7 @@ const Register = () => {
         e.preventDefault();
         console.log("email: ", email);
 
-        fetch("/api/register", {
+        fetch("host.com/user/register", {
             method: "POST",
             body: JSON.stringify({
                 email,
