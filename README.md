@@ -1,7 +1,16 @@
-To run project with docker desktop, first open or download docker desktop.
+# Setup #
 
-then proceed to open a terminal in de directory where you have cloned the project.
+To run the project run the following commands:
 
-in the terminal type "docker-compose up", this will create a docker image file to run the project!
+```
+npm install
+```
+```
+docker-compose up -d --build
+```
 
-Made by Fabian & Luuk
+In case you want to see the logs from docker you can run the following instead:
+
+```
+docker-compose up --build
+```
